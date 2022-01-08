@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block meta %}
+        
+    {% endblock meta %}
+    <title>{{title}}</title>
+    {% block head %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% endblock head %}
+</head>
+<body>
+    {% include 'navbar.html' %}
+    {% block header %}
+        {% include 'content/header.html' %}
+    {% endblock header %}
+
+    {% block body %}
+        
+    {% endblock body %}
+    {% block footer %}
+        {% include 'content/footer.html' %}
+    {% endblock footer %}
+    {% block scripts %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% endblock scripts %}
+</body>
+</html>

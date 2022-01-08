@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block header %}
+    
+{% endblock header %}
+{% block body %}
+<form method="post" class="row g-3 needs-validation" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="col-md-6 mb-3">
+        {{ form.email.label }}
+        {% if form.email.errors %}
+            {{ form.email(class="form-control ", aria-describedby="emailHelp") }}
+            {% for error in form.email.errors %}
+                
+            {% endfor %}
+        {% endif %}
+        
+        
+      <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Password</label>
+      <input type="password" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="exampleCheck1">
+      <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>   
+{% endblock body %}
