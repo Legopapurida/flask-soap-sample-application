@@ -8,11 +8,11 @@ from wtforms.validators import DataRequired
 class CreatePostForm(FlaskForm):
 
     title = StringField('title', validators=[DataRequired()])
-    body = TextAreaField('title', validators=[DataRequired()])
+    body = TextAreaField('body', validators=[DataRequired()])
     submit = SubmitField('Post')
 
 class UpdatePostForm(FlaskForm):
 
     title = StringField('title', validators=[DataRequired()])
-    body = TextAreaField('title', validators=[DataRequired()])
+    body = TextAreaField('body', validators=[DataRequired()])
     submit = SubmitField('Update')
