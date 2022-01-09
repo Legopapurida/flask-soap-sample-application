@@ -6,35 +6,40 @@ from flask import abort
 from flask import redirect
 from flask import url_for
 from flask import render_template
+from psycopg.rows import class_row
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
-from .. import db
 
-from . import auth
+from .. import db
+from ..controllers import login_required
+
+from . import auth as router
 from .forms import SignUpForm
 from .forms import LoginForm
 from .models import User
-from .controllers import login_required
 
-@auth.post('/login')
+
+@router.post('/login')
 async def login():
 
     form: LoginForm = LoginForm()
     message: str = ...
-
+    contexts: dict = dict(
+        form=form, 
+        title='Login', 
+    )
     if g.user:
         return redirect(url_for('index'))
 
     if form.validate_on_submit():
-        with db.connection.cursor() as cursor:
+        with db.connection.cursor(row_factory=class_row(User)) as cursor:
             try:
-                user: User = User(**cursor.execute(
-                    "SELECT * FROM users WHERE email = ?",
+                user: User = cursor.execute(
+                    "SELECT * FROM users WHERE email = %s",
                         (
                             form.email.data,
                         )
-                    )
-                )
+                    ).fetchone()
                 if user and check_password_hash(user.email, form.email.data):
                     message = ('You logged in successfully!', 'success')
                     session['user_id'] = user['id']
@@ -48,9 +53,10 @@ async def login():
             finally:
                 db.connection.close()
     flash(*message)
-    return render_template('auth/login.html', )
+    return render_template('auth/login.html', **contexts)
 
-@auth.get('/logout')
+
+@router.get('/logout')
 @login_required
 async def logout():
     session.pop('user_id')
@@ -58,7 +64,7 @@ async def logout():
     return redirect(url_for('auth.login'))
 
 
-@auth.post('/signup')
+@router.post('/signup')
 async def signup():
     form: SignUpForm = SignUpForm()
     contexts: dict = dict(
@@ -69,7 +75,7 @@ async def signup():
         with db.connection.cursor() as cursor:
             try:
                 cursor.execute(
-                    "INSERT INTO users (username, email, password", 
+                    "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)", 
                     (
                         form.username.data,
                         form.email.data,

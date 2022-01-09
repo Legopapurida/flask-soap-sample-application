@@ -1,7 +1,12 @@
-from typing import _S, Generic, _T, Type
+from typing import  Generic
+from typing import  TypeVar
 from flask import Flask
+from psycopg import Connection as PostgreSqlConnection
+from sqlite3 import Connection as SqliteConnection
+from sqlite3 import connect as sqlite3_connector
+from psycopg import connect as psycopg_connector
 
-
+_T = TypeVar('_T')
 class Database(Generic[_T]):
 
     def __init__(self, app: Flask = None) -> None:
@@ -23,4 +28,6 @@ class Database(Generic[_T]):
     def connection(self):
         return self.__connection
 
-        
+
+SqliteConnector = sqlite3_connector 
+PostgreSqlConnector = psycopg_connector 

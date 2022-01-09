@@ -1,12 +1,10 @@
 from flask import session
 from flask import g
 
-from .. import db
-from . import auth
-from .models import User
+from . import db
+from .auth.models import User
 
 
-@auth.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
 
