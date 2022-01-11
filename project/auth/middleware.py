@@ -1,7 +1,7 @@
 from flask import session
 from flask import g
 
-from .. import db
+from .. import get_db
 from . import auth
 from .models import User
 
@@ -13,7 +13,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = User(**db.connection.execute(
+        g.user = User(**get_db().connection.cursor().execute(
             "SELECT * FROM users WHERE id = ? ", (user_id, )
             ).fetchone()
         )

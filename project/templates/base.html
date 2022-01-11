@@ -10,17 +10,47 @@
     <title>{{title}}</title>
     {% block head %}
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     {% endblock head %}
 </head>
 <body>
-    {% include 'navbar.html' %}
+    {% include 'content/navbar.html' %}
     {% block header %}
         {% include 'content/header.html' %}
     {% endblock header %}
-
-    {% block body %}
-        
-    {% endblock body %}
+    <main role="main" class="container mt-4">
+        <div class="row">
+                    {# -------- FLASH MESSAGE -------- #}
+                    {%with messages = get_flashed_messages(with_categories=true)%}
+                        {%if messages%}
+                            {%for category, message in messages%}
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {%endfor%}
+                        {%endif%}
+                    {%endwith%}
+                    {# -------- FLASH MESSAGE -------- #}
+                    {# MAIN CONTENT BLOCK #}
+                    <div class="col-md-8">
+                        {% block body %}
+            
+                        {% endblock body %}
+                    </div>
+                    <div class="col-md-4">
+                        <div class="content-section">
+                            <h3>Our Sidebar</h3>
+                            <p class="text-muted">You can put any information here you'd like.</p>
+                            <ul class="sidebar-menu">
+                                <li class="sidebar-menu-item">Latest Events</li>
+                                <li class="sidebar-menu-item">Announcements</li>
+                                <li class="sidebar-menu-item">Calenders</li>
+                                <li class="sidebar-menu-item">etc</li>
+                            </ul>
+                        </div>
+                    </div>
+        </div>
+    </main>
     {% block footer %}
         {% include 'content/footer.html' %}
     {% endblock footer %}

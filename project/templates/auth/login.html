@@ -1,30 +1,30 @@
-{% extends 'base.html' %}
-{% block header %}
-    
-{% endblock header %}
-{% block body %}
-<form method="post" class="row g-3 needs-validation" novalidate>
-    {{ form.hidden_tag() }}
-    <div class="col-md-6 mb-3">
-        {{ form.email.label }}
-        {% if form.email.errors %}
-            {{ form.email(class="form-control ", aria-describedby="emailHelp") }}
-            {% for error in form.email.errors %}
-                
-            {% endfor %}
-        {% endif %}
-        
-        
-      <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-    </div>
-    <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1">
-    </div>
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1">
-      <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>   
-{% endblock body %}
+{%extends "base.html"%}
+{%block body%}
+  <div class="content-section">
+      <form action="" method="POST">
+          {{ form.hidden_tag() }}
+          <fieldset class="form-group">
+              <legend class="border-bottom mb-4">Login</legend>
+              <div class="form-group">
+                  {{ form.email.label(class="form-control-label") }}
+                  {{ form.email(class="form-control form-control-lg") }}
+              </div>
+              <div class="form-group">
+                  {{ form.password.label(class="form-control-label") }}
+                  {{ form.password(class="form-control form-control-lg") }}
+              </div>
+          </fieldset>
+          <div class="form-group mt-4">
+              {{ form.submit(class="btn btn-outline-info") }}
+          </div>
+          <small class="text-muted ml-2">
+              <a href="#">Forgot Password?</a>
+          </small>
+      </form>
+  </div>
+  <div class="border-top pt-3">
+      <small class="text-muted">Don't have an account? 
+          <a class="ml-2" href="{{ url_for('auth.signup') }}">Sign Up</a>
+      </small>
+  </div>
+{%endblock%}

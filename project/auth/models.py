@@ -9,4 +9,8 @@ class User:
     username: str
     email: str 
     password: str
-    created: datetime
+    fname: str
+    lname: str
+    address: str
+    created_on: datetime
+    debt: int

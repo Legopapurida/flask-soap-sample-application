@@ -1,17 +1,12 @@
-CREATE TABLE IF NOT EXISTS users(
-    id serial PRIMARY KEY,
-    username VARCHAR ( 50 ) UNIQUE NOT NULL,
-    password VARCHAR ( 50 ) NOT NULL,
+-- DROP TABLE IF EXISTS users;
+CREATE TABLE users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
     email VARCHAR ( 255 ) UNIQUE NOT NULL,
-    created_on TIMESTAMP NOT NULL,
-    last_login TIMESTAMP 
-);
-
-CREATE TABLE IF NOT EXISTS posts(
-    id serial PRIMARY KEY,
-    author_id INTEGER NOT NULL,
-    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    title TEXT NOT NULL,
-    body TEXT NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES users (id)
+    fname VARCHAR ( 255 ) NOT NULL,
+    lname VARCHAR ( 255 ) NOT NULL,
+    address VARCHAR ( 255 ) NOT NULL,
+    created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    debt DOUBLE NOT NULL DEFAULT 0
 );
