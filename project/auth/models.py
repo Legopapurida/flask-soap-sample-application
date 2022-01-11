@@ -4,7 +4,6 @@ from datetime import datetime
 
 @dataclass
 class User:
-
     id: int
     username: str
     email: str 

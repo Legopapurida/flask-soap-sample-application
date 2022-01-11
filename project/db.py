@@ -39,13 +39,12 @@ def init_db():
     from mysql.connector.cursor import MySQLCursor
     with open('project/db.sql', 'r') as f:
         db: Database[MySQLConnection] = Database()
-        db.connect(connection=connect(
-            host=current_app.config['DBHOST'],
+        db.connect(connect(host=current_app.config['DBHOST'],
             port=current_app.config['DBPORT'],
-            database=current_app.config['DBNAME'],
             password=current_app.config['DBPASS'],
             user=current_app.config['DBUSER']
         ))
         curs: MySQLCursor = db.connection.cursor()
+        curs.execute("CREATE DATABASE IF NOT EXISTS mydatabase")
         for line in f.readlines():
             curs.execute(line)

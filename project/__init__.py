@@ -20,6 +20,7 @@ from spyne.server.wsgi import WsgiApplication
 csrf: CSRFProtect = CSRFProtect()
 db: Database[MySQLConnection] = Database() 
 
+#connection pool
 def get_db() -> Database[MySQLConnection]:
     if 'db' not in g:
         db.connect(connect(
@@ -43,13 +44,16 @@ def create_app(config:BaseConfig=None) -> Flask:
     app.config.from_object(config or DevelopmentConfig)
     
     # Creating database app
-    db.connect(connection=connect(
-        host=app.config['DBHOST'],
-        port=app.config['DBPORT'],
-        database=app.config['DBNAME'],
-        password=app.config['DBPASS'],
-        user=app.config['DBUSER']
-    ))
+    try:
+        db.connect(connection=connect(
+            host=app.config['DBHOST'],
+            port=app.config['DBPORT'],
+            database=app.config['DBNAME'],
+            password=app.config['DBPASS'],
+            user=app.config['DBUSER']
+        ))
+    except:
+        pass
     db.init_app(app=app)
     app.cli.add_command(init_db)
 
@@ -63,13 +67,19 @@ def create_app(config:BaseConfig=None) -> Flask:
 
     app.before_request(load_logged_in_user)
     soap_app = create_soap(app)
+    #wisgi => for sync webService Mechanism
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         '/soap': WsgiApplication(soap_app)
     })
 
+
+    #routers
     app.register_blueprint(auth)
     app.register_blueprint(site)
+
+    #root router
     app.add_url_rule('/', endpoint='home')
+
     return app
 
 
