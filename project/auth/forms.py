@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from mysql.connector.cursor import MySQLCursor
 from wtforms import StringField
 from wtforms import EmailField
 from wtforms import PasswordField
@@ -31,11 +32,15 @@ class SignUpForm(FlaskForm):
     submit = SubmitField('Sign up')
 
     def validate_username(self, username: StringField):
-        user_id = get_db().connection.cursor().execute("SELECT id FROM users WHERE username=?", (username.data, )).fetchone()
+        cursor: MySQLCursor = get_db().connection.cursor(dictionary=True)
+        cursor.execute("SELECT id FROM users WHERE username=%s", (username.data, ))
+        user_id = cursor.fetchone()
         if user_id: 
             raise ValidationError(message=f"Username {username.data} is already registered.")
 
     def validate_email(self, email: EmailField):
-        user_id = get_db().connection.cursor().execute("SELECT id FROM users WHERE email=?", (email.data, )).fetchone()
+        cursor: MySQLCursor = get_db().connection.cursor(dictionary=True)
+        cursor.execute("SELECT id FROM users WHERE email=%s", (email.data, ))
+        user_id = cursor.fetchone()
         if user_id: 
             raise ValidationError(message=f"Email {email.data} is already registered.")

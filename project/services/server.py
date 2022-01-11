@@ -1,3 +1,4 @@
+from mysql.connector.cursor import MySQLCursor
 from spyne import Iterable, rpc, Application, Service, Integer
 from spyne.model import fault
 from spyne.protocol.http import HttpRpc
@@ -28,8 +29,10 @@ class FininceService(Service):
         ): 
         try:
             with ctx.udc.app.app_context():
-                cursor = get_db().connection.cursor()
-                check_user = User(**cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone())
+                cursor: MySQLCursor = get_db().connection.cursor(dictionary=True)
+                cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+                check_user = User(**cursor.fetchone())
+                print(check_user)
                 if check_user:
                     return int(check_user.debt)
             raise UnauthenticatedError()

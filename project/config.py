@@ -25,7 +25,7 @@ class DevelopmentConfig(BaseConfig):
     PORT: int = 8080
     SECRET_KEY: str = str(uuid4())
     DBHOST: str = 'localhost'
-    DBNAME: str = 'database'
+    DBNAME: str = 'mydatabase'
     DBPASS: str = ''
     DBUSER: str = 'user'
-    DBPORT: int = 3392
+    DBPORT: int = 3306

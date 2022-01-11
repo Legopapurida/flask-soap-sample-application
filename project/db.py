@@ -1,5 +1,6 @@
 from typing import  Generic, Type, TypeVar
 from flask import Flask
+from flask import current_app
 from flask.cli import with_appcontext
 import click
 
@@ -33,12 +34,18 @@ class Database(Generic[_T]):
 @click.command('init-db')
 @with_appcontext
 def init_db():
-    from sqlite3 import connect
-    from sqlite3 import PARSE_DECLTYPES
-    from sqlite3 import Row
+    from mysql.connector import connect
+    from mysql.connector import MySQLConnection
+    from mysql.connector.cursor import MySQLCursor
     with open('project/db.sql', 'r') as f:
-        query = f.read()
-        db = Database()
-        db.connect(connection=connect('site.db', detect_types=PARSE_DECLTYPES))
-        db.connection.row_factory = Row
-        db.connection.execute(query)
+        db: Database[MySQLConnection] = Database()
+        db.connect(connection=connect(
+            host=current_app.config['DBHOST'],
+            port=current_app.config['DBPORT'],
+            database=current_app.config['DBNAME'],
+            password=current_app.config['DBPASS'],
+            user=current_app.config['DBUSER']
+        ))
+        curs: MySQLCursor = db.connection.cursor()
+        for line in f.readlines():
+            curs.execute(line)

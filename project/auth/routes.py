@@ -6,8 +6,11 @@ from flask import abort
 from flask import redirect
 from flask import url_for
 from flask import render_template
+
+from mysql.connector.cursor import MySQLCursor
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+
 from .. import get_db
 
 from . import auth
@@ -26,14 +29,13 @@ def login():
 
     form: LoginForm = LoginForm()
 
-    if g.user:
+    if 'user_id' in session:
         return redirect(url_for('index'))
 
     if form.validate_on_submit():
-        # cursor: MySQLCursor = db.connection.cursor(dictionary=True)
-        cursor = get_db().connection.cursor()
+        cursor: MySQLCursor = get_db().connection.cursor(dictionary=True)
         cursor.execute(
-            "SELECT * FROM users WHERE email = ?",
+            "SELECT * FROM users WHERE email = %s",
                 (
                     form.email.data,
                 )
@@ -44,7 +46,7 @@ def login():
             if check_password_hash(user.password, form.password.data):
                 flash('You logged in successfully!', 'success')
                 session['user_id'] = user.id
-                return redirect(url_for('index'))
+                return redirect(url_for('site.index'))
         else:
             flash('There is some wrong, please check ', 'danger')    
     return render_template('auth/login.html', form=form)
@@ -65,9 +67,8 @@ def signup():
         title='Sign Up', 
     )
     if form.validate_on_submit():
-        # cursor: MySQLCursor = db.connection.cursor(dictionary=True)
-        cursor = get_db().connection.cursor()
-        cursor.execute("INSERT INTO users (username, email, password, fname, lname, address, debt) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+        cursor: MySQLCursor = get_db().connection.cursor(dictionary=True)
+        cursor.execute("INSERT INTO users (username, email, password, fname, lname, address, debt) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
                     (
                         form.username.data,
                         form.email.data,
